@@ -51,8 +51,16 @@ _start:
 	 */
 
 	xorl	%eax, %eax
+  /* HTKIM
+   * 자신의 값으로  xorl을 수행함으로 %eax의 값은 0 
+   */
 	movl	%eax, %cr3    /* Invalidate TLB*/
+  /* HTKIM
+   * cr3레지스터는 x86 아키텍쳐에서 커널의 page_dir 물리 주소가 저장
+   * 되어 있음.
+   */
 
+  
 	/* Invalidating the cache here seems to be a bad idea on
 	 * modern processors.  Don't.
 	 * If we are hyperthreaded or we have multiple cores it is bad,
@@ -85,6 +93,14 @@ _start:
 	 * utmost, so that we can use the same code for both
 	 * our initial entry point and startup of the second cpu.
 	 * The code assumes when executing at _start that:
+   * HTKIM
+   * 메모리 주소의 기준을 정하는데 사용한 네 개의 세그먼트
+   * 레지스터(CS, DS SS, ES)
+   * CS : Code Segment / DS : Data Segment
+   * SS : Stack Segment / ES : Extra Segment
+   *
+   * 현재 세그먼트에서 다음에 실행될 명령어의 offset을 저장하는 IP 레지스터
+   *
 	 * (((cs & 0xfff) == 0) and (ip == _start & 0xffff))
 	 * or
 	 * ((cs == anything) and (ip == 0)).
