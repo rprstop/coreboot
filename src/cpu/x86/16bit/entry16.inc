@@ -52,7 +52,7 @@ _start:
 
 	xorl	%eax, %eax
   /* HTKIM
-   * 자신의 값으로  xorl을 수행함으로 %eax의 값은 0 
+   * 자신의 값으로  xorl을 수행함으로 %eax의 값은 0
    */
 	movl	%eax, %cr3    /* Invalidate TLB*/
   /* HTKIM
@@ -60,7 +60,7 @@ _start:
    * 되어 있음.
    */
 
-  
+
 	/* Invalidating the cache here seems to be a bad idea on
 	 * modern processors.  Don't.
 	 * If we are hyperthreaded or we have multiple cores it is bad,
@@ -119,24 +119,66 @@ _start:
 	 * See IA32 manual Vol 3A 19.26 Interrupts.
 	 */
 
-	movw	%cs, %ax
-	shlw	$4, %ax
-	movw	$nullidt_offset, %bx
-	subw	%ax, %bx
-	lidt	%cs:(%bx)
-	movw	$gdtptr16_offset, %bx
-	subw	%ax, %bx
-	data32  lgdt %cs:(%bx)
+	  /* HTKIM
+	   * x86 general register (AX, BX, CX, DX)가 있으며, 그 크기는 16bit이다.
+	   * general reg의 상위(AH), 하위(AL) 각각 8bit로 나뉜다.(독립적으로 1byte
+	   * reg로 사용이 가능)
+	   * AX - 누산기의 기능을 한다.
+	   * BX - base reg이다. 간접적인 주소 방식을 위해 사용하는  reg.
+	   * CX - count reg이다. loop, shift, rotate, string 명령에 사용.
+	   * DX - data reg이다. word크기의 mul, div 연산을 할 때 AX와 함께 사용.
+	   */
 
-	movl	%cr0, %eax
+	movw	%cs, %ax	/* save new location */
+	shlw	$4, %ax		/* shift word 4 times, multiply that vale by 2^4 */
+	movw	$nullidt_offset, %bx /* nullidt_offset = .globl nullidt & oxffff */
+	subw	%ax, %bx 	/* ax -bx */
+	lidt	%cs:(%bx) 	/* Loads a value from an operand into the IDT regiter. */
+						/* LIDT (Load Interrupt Descriptor Table Register)
+						 * - Loads the IDT base address and limit from memory into memory.
+						 */
+	movw	$gdtptr16_offset, %bx /* gdtprt16_offset = .globl gdtptr16 & 0xffff */
+	subw	%ax, %bx	/* ax -bx */
+	data32  lgdt %cs:(%bx) /* LGDT(Load GDT Register)
+							* - Loads the GDT base address and limit from memory
+							* into the GDTR register.
+							*/
+						   /* data32 - Operand/Address size prefixes : data16, addr16,
+						    * data32 and addr32
+							*/
+
+	movl	%cr0, %eax 	/* cr0 is control register. */
 	andl	$0x7FFAFFD1, %eax /* PG,AM,WP,NE,TS,EM,MP = 0 */
+	/* HEKIM
+	 * PG - paging (bit 31 of CR0)
+	 * CD - Cache Disable (bit 30 of CR0)
+	 * NW - Not Write-through (bit 29 of CR0)
+	 * AM - Alignment Mask (bit 18 of CR0)
+	 * WP - write protect (bit 16 of CR0)
+	 * NE - Numeric Error (bit 5 of CR0)
+	 * ET - Extension Type (bit 4 of CR0)
+	 * TS - Task Switched (bit 3 of CR0)
+	 * EM - Emulation (bit 2 of CR0)
+	 * MP - Monitor Coprocessor (bit 1 of CR0)
+	 * PE - Protection Enable (bit 0 of CR0)
+	 * PCD - Page-level Cache Disable (bit 4 of CR3)
+	 * others - IA32 Vol.3A 2-22
+	 *
+	 */
+
+
 	orl	$0x60000001, %eax /* CD, NW, PE = 1 */
 	movl	%eax, %cr0
 
-	/* Restore BIST to %eax */
+	/* Restore BIST(Built-In Self-Test) to %eax */
 	movl	%ebp, %eax
 
 	/* Now that we are in protected mode jump to a 32 bit code segment. */
+	/* Long jump, use $ROM_CODE_SEG for the CS reg and __protected_start for
+	 * the EIP reg.
+	 * At&t - 'b', 'w', 'l' and 'q' at the end of the instruction.
+	 * Calls : lcall/ljmp $section, $offset
+	 */
 	data32	ljmp	$ROM_CODE_SEG, $__protected_start
 
 	/**
