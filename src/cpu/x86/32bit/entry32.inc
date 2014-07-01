@@ -175,6 +175,9 @@ __protected_start:
 	movw	%ax, %ss
 	movw	%ax, %fs
 	movw	%ax, %gs
+	/* HTKIM
+	 * ToDo:각각의 segment reg들이 ax로 movw 되면서 어떻게 되나?
+	 */
 
 	/* Restore the BIST value to %eax */
 	movl	%ebp, %eax

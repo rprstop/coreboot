@@ -18,8 +18,12 @@
  */
 
 __fpu_start:
-	/* Preserve BIST. */
-	movl	%eax, %ebp
+	/* Preserve BIST. eax : 0^4, ebp : 0000_0000H */
+	movl	%eax, %ebp /* ebp : the frame pointer */
+	/* HTKIM
+	 * If BIST(Built-In Self-Test) is invoked on power up or reset, EAX is 0
+	 * only if all tests passed.
+	 */
 
 	/*
 	 * Clear the CR0[2] bit (the "Emulation" flag, EM).
@@ -31,8 +35,10 @@ __fpu_start:
 	 * Additionally, if this bit is not cleared, MMX/SSE instructions won't
 	 * work, i.e., they will trigger an invalid opcode exception (#UD).
 	 */
-	movl	%cr0, %eax
-	andl	$~(1 << 2), %eax
+
+	movl	%cr0, %eax /* cr0는 control reg */
+	andl	$~(1 << 2), %eax /* cr0[2] bit을 clear하게 되는데, 이는 FPU를 */
+							 /* software 말고 hardware로 사용 함 */
 	movl	%eax, %cr0
 
 	/* Restore BIST. */
