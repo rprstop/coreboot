@@ -44,6 +44,33 @@ typedef struct msrinit_struct
  * __asm__ 어셈을 사용한다는 키원드
  * __volatile__ 최적화 옵션을 사용하지 않고 그대로 컴파일.
  */
+
+/* HTKIM
+ * __asm__(asm statements : outputs : inputs : registers-modified);
+ * asm statements - 뉴라인으로 구분되는 AT&T 형식.
+ * output - ','로 구분되고 괄호안의 이름이 따르는 constraints.
+ * input - ','로 구분되고 괄호안의 이름이 따르는 constraints.
+ * reg modify - ','로 구분되는 이름.
+ * EX)
+ * int i=0;
+ * __asm__ ("
+ *  pushl %%eax   //입력,출력, reg modify 필드 중 어느것이라도 사용된다면
+ *                // '%' 하나가 아니라 '%%'를 사용한다.
+ *  movl %0 %%eax //입력이 하나:%0 입력이 둘:%0, %1
+ *  popl %%eax "
+ *  :             //출력 필드를 사용하면 앞에 '='을 쓴다. ex) "=g" (k)
+ *  : "g" (i)
+ * );
+ *
+ * 입력 필드만 사용하므로 출력 및 마지막 필드는 그냥 두어야 함.
+ * constraints는 컴파일러에게 값을 넘겨주어 처리하도록 하는 명령어.
+ * 일반적으로 입력 변수로 "g" 를 사용하며, "g"는 i 의 값을 어디로 불러올지를 
+ * 컴파일러가 결정 하도록 한다.
+ * 범용적으로 사용되는 것으로 "r" 이 있는데, 이것은 현재 사용가능한 아무
+ * 레지스터로 로딩하는 것을 의미한다.
+ * "a" (ax/eax), "b" (bx/ebx), "c" (cx/ecx), "d" (dx/edx), "D" (di/edi), 
+ * "S" (si/esi), etc.
+ */
 static inline __attribute__((always_inline)) msr_t rdmsr(unsigned index)
 {
 	msr_t result;
