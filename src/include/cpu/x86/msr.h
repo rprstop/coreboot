@@ -38,6 +38,11 @@ typedef struct msrinit_struct
  * declared as inline are not being inlined. This patch forces
  * these functions to always be inlined by adding the qualifier
  * __attribute__((always_inline)) to their declaration.
+ * HTKIM
+ * __attribute__((always_inline)) 키워드를 사용함으로써 최적화
+ * 레벨에 상관없이 항상 함수를 인라인한다.
+ * __asm__ 어셈을 사용한다는 키원드
+ * __volatile__ 최적화 옵션을 사용하지 않고 그대로 컴파일.
  */
 static inline __attribute__((always_inline)) msr_t rdmsr(unsigned index)
 {
