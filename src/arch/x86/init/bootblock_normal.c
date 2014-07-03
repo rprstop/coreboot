@@ -16,6 +16,7 @@ static void main(unsigned long bist)
 		bootblock_mainboard_init();
 
 #if CONFIG_USE_OPTION_TABLE
+/* CONFIG_USE_OPTION_TABLE is not set on monroe */
 		sanitize_cmos();
 #endif
 		boot_mode = do_normal_boot();

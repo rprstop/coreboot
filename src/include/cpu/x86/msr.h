@@ -64,11 +64,11 @@ typedef struct msrinit_struct
  *
  * 입력 필드만 사용하므로 출력 및 마지막 필드는 그냥 두어야 함.
  * constraints는 컴파일러에게 값을 넘겨주어 처리하도록 하는 명령어.
- * 일반적으로 입력 변수로 "g" 를 사용하며, "g"는 i 의 값을 어디로 불러올지를 
+ * 일반적으로 입력 변수로 "g" 를 사용하며, "g"는 i 의 값을 어디로 불러올지를
  * 컴파일러가 결정 하도록 한다.
  * 범용적으로 사용되는 것으로 "r" 이 있는데, 이것은 현재 사용가능한 아무
  * 레지스터로 로딩하는 것을 의미한다.
- * "a" (ax/eax), "b" (bx/ebx), "c" (cx/ecx), "d" (dx/edx), "D" (di/edi), 
+ * "a" (ax/eax), "b" (bx/ebx), "c" (cx/ecx), "d" (dx/edx), "D" (di/edi),
  * "S" (si/esi), etc.
  */
 static inline __attribute__((always_inline)) msr_t rdmsr(unsigned index)
