@@ -82,6 +82,22 @@ static inline __attribute__((always_inline)) msr_t rdmsr(unsigned index)
 	return result;
 }
 
+/* HTKIM
+ * index -> 1b
+ * According to Table 35-2. IA-31 Architectural MSRs
+ * Register Addr 1B / IA32_APIC_BASE(APIC_BASE)
+ * 0:7 Reserved, 9 Reserved
+ * 8 BSP flag(R/W): set to 1 for the processor selected 되면 나머지 프로세스들은 0
+ * 10 Eaable x2 APIC mode : CPUID.(EAX=1):ECX.21 bit가 set되었다면 프로세스는
+ * 이기능을 지원한다.
+ * 11 APIC Global Enable (R/W): enable or disable the local APIC
+ * (MAXPHYWID -1):12 APIC Base(R/W): 35:12 APIC reg의 base addr 이며, power on/off
+ * or reset 후에 FEE0_0000H로 set된다.
+ * 63:MAXPHYWID Reserved
+ * (APIC - Advanced Programmable Interrupt Controller)
+ * (BSP - Bootstrap Processor)
+ */
+
 static inline __attribute__((always_inline)) void wrmsr(unsigned index, msr_t msr)
 {
 	__asm__ __volatile__ (

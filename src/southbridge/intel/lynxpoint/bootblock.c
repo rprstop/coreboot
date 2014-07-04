@@ -87,7 +87,7 @@ static void set_spi_speed(void)
 
 static void bootblock_southbridge_init(void)
 {
-#if CONFIG_COLLECT_TIMESTAMPS
+#if CONFIG_COLLECT_TIMESTAMPS // This configure is set.
 	store_initial_timestamp();
 #endif
 	map_rcba();

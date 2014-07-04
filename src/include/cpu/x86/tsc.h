@@ -15,6 +15,13 @@ struct tsc_struct {
 };
 typedef struct tsc_struct tsc_t;
 
+/* HTKIM
+ * 프로세스의 이벤트 및 모니터를 위해 time-stamp counter mechanism을 정의
+ * TSC flag - CPUID.1:EDX.TSC[bit 4] = 1 -> 사용
+ * RDTSC instruction - time-stamp counter을 읽기 위해 사용
+ * TSD flag - time-stamp counter을 enable/disable 하기 위한 control reg
+ *			 CR4.TSD[bit 2] =1
+ */
 static inline tsc_t rdtsc(void)
 {
 	tsc_t res;

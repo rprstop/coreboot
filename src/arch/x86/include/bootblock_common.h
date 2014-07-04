@@ -16,19 +16,29 @@
 #else
 static void bootblock_mainboard_init(void)
 {
-#ifdef CONFIG_BOOTBLOCK_NORTHBRIDGE_INIT
+#ifdef CONFIG_BOOTBLOCK_NORTHBRIDGE_INIT // This configure is set.
+	/*
+	 * HTKIM
+	 * "northbridge/intel/haswell/bootblock.c"
+	 * pci 세팅
+	 */
 	bootblock_northbridge_init();
 #endif
-#ifdef CONFIG_BOOTBLOCK_SOUTHBRIDGE_INIT
+#ifdef CONFIG_BOOTBLOCK_SOUTHBRIDGE_INIT // This configure is set.
+	/*
+	 * HTKIM
+	 * "southbridge/intel/lynxpoint/bootblock.c"
+	 */
 	bootblock_southbridge_init();
 #endif
-#ifdef CONFIG_BOOTBLOCK_CPU_INIT
+#ifdef CONFIG_BOOTBLOCK_CPU_INIT // This configure is set
+								 // "cpu/intel/haswell/bootblock.c"
 	bootblock_cpu_init();
 #endif
 }
 #endif
 
-#if CONFIG_USE_OPTION_TABLE
+#if CONFIG_USE_OPTION_TABLE // This configure is not set
 #include <pc80/mc146818rtc.h>
 
 static void sanitize_cmos(void)

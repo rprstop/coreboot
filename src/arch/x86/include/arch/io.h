@@ -7,6 +7,12 @@
  * This file contains the definitions for the x86 IO instructions
  * inb/inw/inl/outb/outw/outl and the "string versions" of the same
  * (insb/insw/insl/outsb/outsw/outsl).
+ * inb = insb = input byte string from a port
+ * inw = insw = input word string from port
+ * inl = insl = input doubleword string from port
+ * outb = outsb = output string to port
+ * outw = outsw = output word string to port
+ * outl = outsl = output doubleword string to port
  */
 #if defined(__ROMCC__)
 static inline void outb(uint8_t value, uint16_t port)
