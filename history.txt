@@ -5,3 +5,11 @@
 	-> entry32.inc ->
 /src/cpu/x86
 	-> fpu_enable.inc ->
+/src/arch/x86/init
+	-> bootblock_normal.c -> boot_ cpu() -> bootblock_mainboard_init()
+		/src/cpu/x86/lapic/boot_cpu.c
+		/src/arch/x86/include/bootblock_common.h
+			-> bootblock_mainboard_init()->bootblock_northbridge_init()->bootblock_southbridge_init()
+			-> store_initial_timestamp()->map_rcba()->enable_spi_prefetch()->
+
+
